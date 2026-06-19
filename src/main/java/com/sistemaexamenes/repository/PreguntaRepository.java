@@ -22,4 +22,15 @@ public interface PreguntaRepository
     List<Pregunta> findByProcesoIdAndCategoriaId(
             Long procesoId,
             Long categoriaId);
+
+    List<Pregunta>
+    findByProcesoIdAndCategoriaIdAndActivoTrue(
+            Long procesoId,
+            Long categoriaId
+    );
+
+    Long countByProcesoIdAndCategoriaIdAndActivoTrue(
+            Long procesoId,
+            Long categoriaId
+    );
 }
