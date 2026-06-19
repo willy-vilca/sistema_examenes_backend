@@ -63,6 +63,11 @@
 			<artifactId>openhtmltopdf-pdfbox</artifactId>
 			<version>1.0.10</version>
 		</dependency>
+		<dependency>
+			<groupId>org.scilab.forge</groupId>
+			<artifactId>jlatexmath</artifactId>
+			<version>1.0.7</version>
+		</dependency>
 	</dependencies>
 
 	<build>

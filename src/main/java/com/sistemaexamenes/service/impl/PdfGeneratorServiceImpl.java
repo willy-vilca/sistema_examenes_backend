@@ -4,6 +4,7 @@ import com.openhtmltopdf.pdfboxout.PdfRendererBuilder;
 
 import com.sistemaexamenes.entity.TemaExamen;
 
+import com.sistemaexamenes.service.FormulaImageService;
 import com.sistemaexamenes.service.PdfGeneratorService;
 
 import lombok.RequiredArgsConstructor;
@@ -24,6 +25,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.UUID;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 
 @Service
@@ -33,6 +36,7 @@ public class PdfGeneratorServiceImpl
 
     private final TemaPreguntaRepository temaPreguntaRepository;
     private final TemaAlternativaRepository temaAlternativaRepository;
+    private final FormulaImageService formulaImageService;
 
     @Value("${app.pdf.dir}")
     private String pdfDir;
@@ -42,14 +46,9 @@ public class PdfGeneratorServiceImpl
             TemaExamen tema
     ) {
         try {
-            String html =
-                    construirHtmlTema(
-                            tema
-                    );
-            html =
-                    limpiarHtml(
-                            html
-                    );
+            String html = construirHtmlTema(tema);
+            html = limpiarHtml(html);
+            html = procesarFormulas(html);
 
             String nombreArchivo =
                     "tema_"
@@ -405,5 +404,60 @@ public class PdfGeneratorServiceImpl
         );
 
         return html;
+    }
+
+    private String procesarFormulas(
+            String html
+    ) {
+
+        Pattern pattern =
+                Pattern.compile(
+                        "\\\\\\((.*?)\\\\\\)"
+                );
+
+        Matcher matcher =
+                pattern.matcher(
+                        html
+                );
+
+        StringBuffer resultado = new StringBuffer();
+
+        while (matcher.find()) {
+
+            String latex = matcher.group(1);
+
+            String rutaImagen =
+                    formulaImageService
+                            .generarImagenFormula(
+                                    latex
+                            );
+
+            String rutaUri =
+                    new File(rutaImagen)
+                            .toURI()
+                            .toString();
+
+            String reemplazo =
+                    "<img src='"
+                            +
+                            rutaUri
+                            +
+                            "' style='vertical-align:middle;' />";
+
+            matcher.appendReplacement(
+                    resultado,
+                    Matcher.quoteReplacement(
+                            reemplazo
+                    )
+            );
+
+        }
+
+        matcher.appendTail(
+                resultado
+        );
+
+        return resultado.toString();
+
     }
 }

@@ -4,6 +4,7 @@ import com.sistemaexamenes.dto.examen.ExamenGeneradoResponseDTO;
 import com.sistemaexamenes.dto.examen.GenerarExamenRequestDTO;
 
 import com.sistemaexamenes.service.ExamenService;
+import com.sistemaexamenes.service.FormulaImageService;
 import com.sistemaexamenes.service.PdfGeneratorService;
 import com.sistemaexamenes.repository.TemaExamenRepository;
 import com.sistemaexamenes.entity.TemaExamen;
@@ -20,6 +21,7 @@ public class ExamenController {
     private final ExamenService examenService;
     private final PdfGeneratorService pdfGeneratorService;
     private final TemaExamenRepository temaExamenRepository;
+    private final FormulaImageService formulaImageService;
 
     @PostMapping("/generar")
     public ResponseEntity<ExamenGeneradoResponseDTO> generarExamen(
@@ -55,5 +57,14 @@ public class ExamenController {
         return ResponseEntity.ok(
                 ruta
         );
+    }
+
+    @GetMapping("/test-formula")
+    public String testFormula() {
+
+        return formulaImageService
+                .generarImagenFormula(
+                        "x^2+y^2=z^2"
+                );
     }
 }
