@@ -80,7 +80,6 @@ public class PdfGeneratorServiceImpl
 
                 PdfRendererBuilder builder = new PdfRendererBuilder();
                 builder.useFastMode();
-                System.out.println(html);
                 builder.withHtmlContent(
                         html,
                         new File(".")
@@ -309,9 +308,16 @@ public class PdfGeneratorServiceImpl
                                 +
                                 ".</span> "
                 );
-                html.append(
-                        tp.getPregunta().getContenidoHtml()
-                );
+
+                String contenidoPregunta = tp.getPregunta().getContenidoHtml();
+                contenidoPregunta = limpiarHtml(contenidoPregunta);
+                //modificamos el primer parrafo de la pregunta para que aparezca junto al número de la pregunta
+                contenidoPregunta =
+                        contenidoPregunta.replaceFirst(
+                                "<p\\s*>",
+                                "<p style='display:inline;'>"
+                        );
+                html.append(contenidoPregunta);
 
                 List<TemaAlternativa> alternativas =
                         temaAlternativaRepository
