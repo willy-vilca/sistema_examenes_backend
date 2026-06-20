@@ -1,20 +1,18 @@
 package com.sistemaexamenes.dto.examen;
 
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Getter
-@Setter
-@Builder
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class CategoriaDisponibleDTO {
+public class CategoriaResumenDTO {
+
     private Long categoriaId;
+
     private String categoriaNombre;
-    private Long cantidadPreguntas;
+
+    private Integer cantidadPreguntas;
+
 }

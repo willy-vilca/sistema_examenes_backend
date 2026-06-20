@@ -10,8 +10,11 @@ import java.util.List;
 public interface TemaPreguntaRepository
         extends JpaRepository<TemaPregunta, Long> {
 
-    List<TemaPregunta>
-    findByTemaIdOrderByOrdenPreguntaAsc(
+    List<TemaPregunta> findByTemaIdOrderByOrdenPreguntaAsc(
+            Long temaId
+    );
+
+    List<TemaPregunta> findByTemaId(
             Long temaId
     );
 }

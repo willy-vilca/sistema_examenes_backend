@@ -2,6 +2,7 @@ package com.sistemaexamenes.repository;
 
 import com.sistemaexamenes.entity.Pregunta;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -30,6 +31,18 @@ public interface PreguntaRepository
     );
 
     Long countByProcesoIdAndCategoriaIdAndActivoTrue(
+            Long procesoId,
+            Long categoriaId
+    );
+
+    @Query("""
+        SELECT COUNT(p)
+        FROM Pregunta p
+        WHERE p.proceso.id = :procesoId
+        AND p.categoria.id = :categoriaId
+        AND p.activo = true
+    """)
+    Long contarPreguntasActivasPorProcesoYCategoria(
             Long procesoId,
             Long categoriaId
     );

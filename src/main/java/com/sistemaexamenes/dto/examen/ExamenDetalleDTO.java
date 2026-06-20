@@ -1,15 +1,15 @@
 package com.sistemaexamenes.dto.examen;
 
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
-@Getter
-@Setter
-@Builder
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class ExamenDetalleDTO {
 
     private Long id;
@@ -20,13 +20,12 @@ public class ExamenDetalleDTO {
 
     private String usuarioNombre;
 
-    private Integer cantidadTemas;
-
     private LocalDateTime fechaGeneracion;
 
-    private List<CategoriaDetalleDTO>
-            categorias;
+    private Integer cantidadTemas;
 
-    private List<TemaDTO>
-            temas;
+    private List<CategoriaResumenDTO> categorias;
+
+    private List<TemaDTO> temas;
+
 }

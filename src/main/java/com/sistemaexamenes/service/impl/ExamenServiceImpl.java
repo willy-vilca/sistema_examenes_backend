@@ -2,6 +2,8 @@ package com.sistemaexamenes.service.impl;
 
 import com.sistemaexamenes.dto.examen.ExamenGeneradoResponseDTO;
 import com.sistemaexamenes.dto.examen.GenerarExamenRequestDTO;
+import com.sistemaexamenes.service.PdfGeneratorService;
+import com.sistemaexamenes.service.FormulaImageService;
 import com.sistemaexamenes.entity.*;
 import com.sistemaexamenes.repository.*;
 import com.sistemaexamenes.service.ExamenService;
@@ -30,6 +32,8 @@ public class ExamenServiceImpl
     private final CategoriaRepository categoriaRepository;
     private final ProcesoAdmisionRepository procesoRepository;
     private final UsuarioRepository usuarioRepository;
+    private final PdfGeneratorService pdfGeneratorService;
+    private final FormulaImageService formulaImageService;
 
     @Override
     public ExamenGeneradoResponseDTO
@@ -46,6 +50,8 @@ public class ExamenServiceImpl
                 );
 
         generarTemas(examen, preguntasSeleccionadas);
+
+        formulaImageService.eliminarFormulasTemporales();
 
         return ExamenGeneradoResponseDTO
                 .builder()
@@ -208,6 +214,12 @@ public class ExamenServiceImpl
                     );
 
             generarPreguntasTema(tema, preguntasSeleccionadas);
+
+            String rutaPdf = pdfGeneratorService.generarPdfTema(tema);
+
+            tema.setRutaPdf(rutaPdf);
+
+            temaExamenRepository.save(tema);
         }
     }
 

@@ -93,7 +93,7 @@ public class PdfGeneratorServiceImpl
                 builder.run();
 
             }
-            return html;
+            return rutaPdf.toString();
 
         }
         catch (Exception ex) {
