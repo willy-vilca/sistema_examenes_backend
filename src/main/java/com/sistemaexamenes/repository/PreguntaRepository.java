@@ -46,4 +46,37 @@ public interface PreguntaRepository
             Long procesoId,
             Long categoriaId
     );
+
+    @Query("""
+        SELECT COUNT(p)
+        FROM Pregunta p
+        WHERE p.activo = true
+    """)
+    Long contarPreguntasActivas();
+
+    @Query("""
+        SELECT p.categoria.id,
+               p.categoria.nombre,
+               COUNT(p)
+        FROM Pregunta p
+        WHERE p.activo = true
+        GROUP BY p.categoria.id,
+                 p.categoria.nombre
+        ORDER BY COUNT(p) DESC
+    """)
+    List<Object[]> obtenerPreguntasPorCategoria();
+
+    @Query("""
+        SELECT c.id,
+               c.nombre,
+               COUNT(p)
+        FROM Categoria c
+        LEFT JOIN Pregunta p
+               ON p.categoria.id = c.id
+               AND p.activo = true
+        GROUP BY c.id,
+                 c.nombre
+        ORDER BY COUNT(p) ASC
+    """)
+    List<Object[]> obtenerCategoriasConMenosPreguntas();
 }
