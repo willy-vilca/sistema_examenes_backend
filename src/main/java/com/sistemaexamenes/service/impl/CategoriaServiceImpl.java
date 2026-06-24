@@ -3,8 +3,10 @@ package com.sistemaexamenes.service.impl;
 import com.sistemaexamenes.dto.categoria.CategoriaRequestDTO;
 import com.sistemaexamenes.dto.categoria.CategoriaResponseDTO;
 import com.sistemaexamenes.entity.Categoria;
+import com.sistemaexamenes.entity.CategoriaPadre;
 import com.sistemaexamenes.exception.ResourceNotFoundException;
 import com.sistemaexamenes.mapper.CategoriaMapper;
+import com.sistemaexamenes.repository.CategoriaPadreRepository;
 import com.sistemaexamenes.repository.CategoriaRepository;
 import com.sistemaexamenes.service.CategoriaService;
 import lombok.RequiredArgsConstructor;
@@ -20,6 +22,7 @@ public class CategoriaServiceImpl
         implements CategoriaService {
 
     private final CategoriaRepository repository;
+    private final CategoriaPadreRepository categoriaPadreRepository;
 
     @Override
     public CategoriaResponseDTO crear(
@@ -34,6 +37,21 @@ public class CategoriaServiceImpl
                     throw new RuntimeException(
                             "Ya existe una categoría con ese nombre");
                 });
+
+        if (dto.getCategoriaPadreId() != null) {
+
+            CategoriaPadre categoriaPadre =
+                    categoriaPadreRepository.findById(
+                            dto.getCategoriaPadreId()
+                    ).orElseThrow(
+                            () -> new RuntimeException(
+                                    "Categoría padre no encontrada"
+                            )
+                    );
+
+            categoria.setCategoriaPadre(categoriaPadre);
+
+        }
 
         categoria = repository.save(categoria);
 
@@ -76,6 +94,25 @@ public class CategoriaServiceImpl
 
         categoria.setNombre(dto.getNombre());
         categoria.setDescripcion(dto.getDescripcion());
+
+        if (dto.getCategoriaPadreId() != null) {
+
+            CategoriaPadre categoriaPadre =
+                    categoriaPadreRepository.findById(
+                            dto.getCategoriaPadreId()
+                    ).orElseThrow(
+                            () -> new RuntimeException(
+                                    "Categoría padre no encontrada"
+                            )
+                    );
+
+            categoria.setCategoriaPadre(categoriaPadre);
+
+        } else {
+
+            categoria.setCategoriaPadre(null);
+
+        }
 
         repository.save(categoria);
 

@@ -2,26 +2,22 @@ package com.sistemaexamenes.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.JoinColumn;
 
 @Entity
-@Table(name = "categorias")
+@Table(name = "categorias_padre")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Categoria {
+public class CategoriaPadre {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "categoria_padre_id")
-    private CategoriaPadre categoriaPadre;
-
+    @Column(nullable = false, unique = true)
     private String nombre;
 
+    @Column(columnDefinition = "TEXT")
     private String descripcion;
 }

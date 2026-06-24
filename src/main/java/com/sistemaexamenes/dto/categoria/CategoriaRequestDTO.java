@@ -12,4 +12,6 @@ public class CategoriaRequestDTO {
     private String nombre;
 
     private String descripcion;
+
+    private Long categoriaPadreId;
 }

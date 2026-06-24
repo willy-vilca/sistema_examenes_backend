@@ -22,6 +22,12 @@ public class CategoriaMapper {
                 .id(categoria.getId())
                 .nombre(categoria.getNombre())
                 .descripcion(categoria.getDescripcion())
+                .categoriaPadreId(categoria.getCategoriaPadre() != null
+                        ? categoria.getCategoriaPadre().getId()
+                        : null)
+                .categoriaPadreNombre(categoria.getCategoriaPadre() != null
+                        ? categoria.getCategoriaPadre().getNombre()
+                        : null)
                 .build();
     }
 }
