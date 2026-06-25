@@ -368,10 +368,36 @@ public class PdfGeneratorServiceImpl
                 "<o:p>.*?</o:p>",
                 ""
         );
+
+        // Espacios
         html = html.replace("&nbsp;", "&#160;");
         html = html.replace("&ensp;", " ");
         html = html.replace("&emsp;", " ");
         html = html.replace("&thinsp;", " ");
+
+        // Signos de puntuación
+        html = html.replace("&iexcl;", "&#161;");
+        html = html.replace("&iquest;", "&#191;");
+        html = html.replace("&acute;", "&#180;");
+        html = html.replace("&deg;", "&#176;");
+        html = html.replace("&ordm;", "&#186;");
+        html = html.replace("&ordf;", "&#170;");
+
+        //Ñ
+        html = html.replace("&ntilde;", "&#241;");
+        html = html.replace("&Ntilde;", "&#209;");
+
+        // Vocales acentuadas
+        html = html.replace("&aacute;", "&#225;");
+        html = html.replace("&eacute;", "&#233;");
+        html = html.replace("&iacute;", "&#237;");
+        html = html.replace("&oacute;", "&#243;");
+        html = html.replace("&uacute;", "&#250;");
+        html = html.replace("&Aacute;", "&#193;");
+        html = html.replace("&Eacute;", "&#201;");
+        html = html.replace("&Iacute;", "&#205;");
+        html = html.replace("&Oacute;", "&#211;");
+        html = html.replace("&Uacute;", "&#218;");
 
         html = html.replaceAll(
                 "<img([^>]*?)(?<!/)>",
