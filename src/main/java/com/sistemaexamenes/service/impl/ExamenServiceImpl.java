@@ -17,6 +17,10 @@ import com.sistemaexamenes.dto.examen.PreguntasSeleccionadasDTO;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 @Service
 @RequiredArgsConstructor
@@ -293,6 +297,36 @@ public class ExamenServiceImpl
             );
             temaAlternativaRepository.save(
                     temaAlternativa
+            );
+        }
+    }
+
+    @Override
+    public void eliminarExamen(Long examenId) {
+        ExamenGenerado examen =
+                examenGeneradoRepository.findById(examenId)
+                        .orElseThrow(() ->
+                                new RuntimeException("Examen no encontrado"));
+
+        List<TemaExamen> temas = temaExamenRepository.findByExamenGeneradoId(examenId);
+
+        for (TemaExamen tema : temas) {
+            eliminarPdf(tema.getRutaPdf());
+        }
+        examenGeneradoRepository.delete(examen);
+    }
+
+    private void eliminarPdf(String rutaPdf) {
+        if (rutaPdf == null || rutaPdf.isBlank()) {
+            return;
+        }
+
+        try {
+            Path ruta = Paths.get(rutaPdf);
+            Files.deleteIfExists(ruta);
+        } catch (IOException e) {
+            System.err.println(
+                    "No se pudo eliminar el PDF: " + rutaPdf
             );
         }
     }

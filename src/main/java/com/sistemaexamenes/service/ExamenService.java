@@ -9,4 +9,5 @@ public interface ExamenService {
     generarExamen(
             GenerarExamenRequestDTO request
     );
+    void eliminarExamen(Long examenId);
 }

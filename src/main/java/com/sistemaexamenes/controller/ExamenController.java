@@ -125,4 +125,12 @@ public class ExamenController {
         }
     }
 
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> eliminarExamen(
+            @PathVariable Long id
+    ) {
+        examenService.eliminarExamen(id);
+        return ResponseEntity.ok().build();
+    }
+
 }

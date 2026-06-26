@@ -22,6 +22,10 @@ public class PreguntaResponseDTO {
 
     private String categoriaNombre;
 
+    private Long categoriaPadreId;
+
+    private String categoriaPadreNombre;
+
     private String contenidoHtml;
 
     private Boolean activo;

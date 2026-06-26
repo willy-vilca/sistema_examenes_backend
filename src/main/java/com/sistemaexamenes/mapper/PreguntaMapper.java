@@ -20,21 +20,25 @@ public class PreguntaMapper {
 
         return PreguntaResponseDTO.builder()
                 .id(pregunta.getId())
-                .procesoId(
-                        pregunta.getProceso().getId())
-                .procesoNombre(
-                        pregunta.getProceso().getNombre())
-                .categoriaId(
-                        pregunta.getCategoria().getId())
-                .categoriaNombre(
-                        pregunta.getCategoria().getNombre())
-                .contenidoHtml(
-                        pregunta.getContenidoHtml())
-                .activo(
-                        pregunta.getActivo())
-                .fechaCreacion(
-                        pregunta.getFechaCreacion()
+                .procesoId(pregunta.getProceso().getId())
+                .procesoNombre(pregunta.getProceso().getNombre())
+                .categoriaId(pregunta.getCategoria().getId())
+                .categoriaNombre(pregunta.getCategoria().getNombre())
+                .categoriaPadreId(
+                        pregunta.getCategoria()
+                                .getCategoriaPadre() != null
+                                ? pregunta.getCategoria().getCategoriaPadre().getId()
+                                : null
                 )
+                .categoriaPadreNombre(
+                        pregunta.getCategoria()
+                                .getCategoriaPadre() != null
+                                ? pregunta.getCategoria().getCategoriaPadre().getNombre()
+                                : null
+                )
+                .contenidoHtml(pregunta.getContenidoHtml())
+                .activo(pregunta.getActivo())
+                .fechaCreacion(pregunta.getFechaCreacion())
                 .alternativas(alternativas)
                 .build();
     }
