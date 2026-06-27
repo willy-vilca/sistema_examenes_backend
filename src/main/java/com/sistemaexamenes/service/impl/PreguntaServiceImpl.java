@@ -14,6 +14,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -151,37 +154,39 @@ public class PreguntaServiceImpl implements PreguntaService {
         pregunta.setContenidoHtml(
                 dto.getContenidoHtml());
 
-        pregunta.setFechaActualizacion(
-                LocalDateTime.now());
+        pregunta.setFechaActualizacion(LocalDateTime.now());
 
-        pregunta.getAlternativas().clear();
+        Map<Long, Alternativa> alternativasExistentes =
+                pregunta.getAlternativas()
+                        .stream()
+                        .collect(Collectors.toMap(
+                                Alternativa::getId,
+                                Function.identity()
+                        ));
 
-        Pregunta finalPregunta = pregunta;
-        dto.getAlternativas()
-                .forEach(aDto -> {
+        for (AlternativaRequestDTO alternativaDTO : dto.getAlternativas()) {
 
-                    Alternativa alternativa =
-                            new Alternativa();
+            Alternativa alternativa = alternativasExistentes.get(alternativaDTO.getId());
 
-                    alternativa.setPregunta(
-                            finalPregunta);
+            if (alternativa == null) {
+                throw new ResourceNotFoundException(
+                        "Alternativa no encontrada: " + alternativaDTO.getId()
+                );
+            }
 
-                    alternativa.setContenidoHtml(
-                            aDto.getContenidoHtml());
+            alternativa.setContenidoHtml(
+                    alternativaDTO.getContenidoHtml()
+            );
 
-                    alternativa.setEsCorrecta(
-                            aDto.getEsCorrecta());
+            alternativa.setEsCorrecta(
+                    alternativaDTO.getEsCorrecta()
+            );
 
-                    finalPregunta.getAlternativas()
-                            .add(alternativa);
-                });
+        }
 
-        pregunta =
-                preguntaRepository.save(
-                        pregunta);
+        pregunta = preguntaRepository.save(pregunta);
 
-        return PreguntaMapper.toResponse(
-                pregunta);
+        return PreguntaMapper.toResponse(pregunta);
     }
 
     @Override

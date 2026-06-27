@@ -7,6 +7,8 @@ import lombok.Setter;
 @Setter
 public class AlternativaRequestDTO {
 
+    private Long id;
+
     private String contenidoHtml;
 
     private Boolean esCorrecta;
