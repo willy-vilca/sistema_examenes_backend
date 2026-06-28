@@ -557,6 +557,17 @@ public class PdfGeneratorServiceImpl
         html = html.replace("&Oacute;", "&#211;");
         html = html.replace("&Uacute;", "&#218;");
 
+        // Superíndices
+        html = html.replace("&sup1;", "&#185;");
+        html = html.replace("&sup2;", "&#178;");
+        html = html.replace("&sup3;", "&#179;");
+
+        // Punto medio
+        html = html.replace("&middot;", "&#183;");
+
+        // Letras griegas
+        html = html.replace("&theta;", "&#952;");
+
         html = html.replaceAll(
                 "<img([^>]*?)(?<!/)>",
                 "<img$1 />"
