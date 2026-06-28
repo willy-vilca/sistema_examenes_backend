@@ -2,6 +2,8 @@ package com.sistemaexamenes.controller;
 
 import com.sistemaexamenes.dto.pregunta.PreguntaRequestDTO;
 import com.sistemaexamenes.dto.pregunta.PreguntaResponseDTO;
+import com.sistemaexamenes.dto.pregunta.ReplicarPreguntasRequestDTO;
+import com.sistemaexamenes.dto.pregunta.ReplicarPreguntasResponseDTO;
 import com.sistemaexamenes.service.PreguntaService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -83,5 +85,18 @@ public class PreguntaController {
 
         return ResponseEntity.ok()
                 .build();
+    }
+
+    @PostMapping("/replicar")
+    public ResponseEntity<ReplicarPreguntasResponseDTO>
+    replicarPreguntas(
+            @RequestBody
+            ReplicarPreguntasRequestDTO dto
+    ) {
+
+        return ResponseEntity.ok(
+                preguntaService.replicarPreguntas(dto)
+        );
+
     }
 }

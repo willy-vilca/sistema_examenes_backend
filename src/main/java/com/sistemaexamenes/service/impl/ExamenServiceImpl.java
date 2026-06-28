@@ -7,6 +7,7 @@ import com.sistemaexamenes.service.FormulaImageService;
 import com.sistemaexamenes.entity.*;
 import com.sistemaexamenes.repository.*;
 import com.sistemaexamenes.service.ExamenService;
+import com.sistemaexamenes.service.SesionService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -38,6 +39,7 @@ public class ExamenServiceImpl
     private final UsuarioRepository usuarioRepository;
     private final PdfGeneratorService pdfGeneratorService;
     private final FormulaImageService formulaImageService;
+    private final SesionService sesionService;
 
     @Override
     public ExamenGeneradoResponseDTO
@@ -78,15 +80,7 @@ public class ExamenServiceImpl
                                 )
                         );
 
-        Usuario usuario =
-                usuarioRepository.findById(
-                                1L
-                        )
-                        .orElseThrow(
-                                () -> new RuntimeException(
-                                        "Usuario no encontrado"
-                                )
-                        );
+        Usuario usuario = sesionService.obtenerUsuarioActual();
 
         ExamenGenerado examen =
                 new ExamenGenerado();

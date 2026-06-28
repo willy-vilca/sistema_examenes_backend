@@ -3,11 +3,14 @@ package com.sistemaexamenes.service.impl;
 import com.sistemaexamenes.dto.pregunta.AlternativaRequestDTO;
 import com.sistemaexamenes.dto.pregunta.PreguntaRequestDTO;
 import com.sistemaexamenes.dto.pregunta.PreguntaResponseDTO;
+import com.sistemaexamenes.dto.pregunta.ReplicarPreguntasRequestDTO;
+import com.sistemaexamenes.dto.pregunta.ReplicarPreguntasResponseDTO;
 import com.sistemaexamenes.entity.*;
 import com.sistemaexamenes.exception.ResourceNotFoundException;
 import com.sistemaexamenes.mapper.PreguntaMapper;
 import com.sistemaexamenes.repository.*;
 import com.sistemaexamenes.service.PreguntaService;
+import com.sistemaexamenes.service.SesionService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,6 +20,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import java.util.HashSet;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -29,6 +34,8 @@ public class PreguntaServiceImpl implements PreguntaService {
     private final CategoriaRepository categoriaRepository;
 
     private final UsuarioRepository usuarioRepository;
+
+    private final SesionService sesionService;
 
     private void validarAlternativas(
             List<AlternativaRequestDTO> alternativas) {
@@ -74,11 +81,7 @@ public class PreguntaServiceImpl implements PreguntaService {
                                 new ResourceNotFoundException(
                                         "Categoría no encontrada"));
 
-        Usuario usuario =
-                usuarioRepository.findById(1L)
-                        .orElseThrow(() ->
-                                new ResourceNotFoundException(
-                                        "Usuario no encontrado"));
+        Usuario usuario = sesionService.obtenerUsuarioActual();
 
         Pregunta pregunta = new Pregunta();
 
@@ -241,5 +244,121 @@ public class PreguntaServiceImpl implements PreguntaService {
 
         preguntaRepository.save(
                 pregunta);
+    }
+
+    @Override
+    public ReplicarPreguntasResponseDTO replicarPreguntas(
+            ReplicarPreguntasRequestDTO dto
+    ) {
+
+        ProcesoAdmision procesoDestino =
+                procesoRepository.findById(
+                        dto.getProcesoDestinoId()
+                ).orElseThrow(() ->
+                        new ResourceNotFoundException(
+                                "Proceso destino no encontrado"
+                        )
+                );
+
+        Usuario usuario = sesionService.obtenerUsuarioActual();
+
+        List<Pregunta> preguntas =
+                preguntaRepository.findAllById(
+                        dto.getPreguntasIds()
+                );
+
+        int copiadas = 0;
+        int omitidas = 0;
+
+        Set<Long> preguntasYaReplicadas = new HashSet<>();
+
+        for (Pregunta preguntaOriginal : preguntas) {
+
+            if (preguntaOriginal
+                    .getProceso()
+                    .getId()
+                    .equals(procesoDestino.getId())) {
+
+                omitidas++;
+                continue;
+            }
+
+            if (!preguntasYaReplicadas.add(
+                    preguntaOriginal.getId())) {
+
+                continue;
+            }
+
+            Pregunta nuevaPregunta = new Pregunta();
+
+            nuevaPregunta.setProceso(
+                    procesoDestino
+            );
+
+            nuevaPregunta.setCategoria(
+                    preguntaOriginal.getCategoria()
+            );
+
+            nuevaPregunta.setUsuario(
+                    usuario
+            );
+
+            nuevaPregunta.setContenidoHtml(
+                    preguntaOriginal.getContenidoHtml()
+            );
+
+            nuevaPregunta.setActivo(
+                    preguntaOriginal.getActivo()
+            );
+
+            nuevaPregunta.setFechaCreacion(
+                    LocalDateTime.now()
+            );
+
+            nuevaPregunta.setFechaActualizacion(
+                    LocalDateTime.now()
+            );
+
+            for (Alternativa alternativaOriginal :
+                    preguntaOriginal.getAlternativas()) {
+
+                Alternativa nuevaAlternativa = new Alternativa();
+
+                nuevaAlternativa.setPregunta(
+                        nuevaPregunta
+                );
+
+                nuevaAlternativa.setContenidoHtml(
+                        alternativaOriginal.getContenidoHtml()
+                );
+
+                nuevaAlternativa.setEsCorrecta(
+                        alternativaOriginal.getEsCorrecta()
+                );
+
+                nuevaPregunta
+                        .getAlternativas()
+                        .add(nuevaAlternativa);
+
+            }
+
+            preguntaRepository.save(
+                    nuevaPregunta
+            );
+
+            copiadas++;
+
+        }
+
+        return ReplicarPreguntasResponseDTO
+                .builder()
+                .preguntasCopiadas(
+                        copiadas
+                )
+                .preguntasOmitidas(
+                        omitidas
+                )
+                .build();
+
     }
 }

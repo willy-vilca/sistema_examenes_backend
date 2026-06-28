@@ -29,6 +29,10 @@ public class FormulaImageServiceImpl
     ) {
 
         try {
+            latex = latex
+                    .replace("&lt;", "<")
+                    .replace("&gt;", ">")
+                    .replace("&amp;", "&");
             TeXFormula formula = new TeXFormula(latex);
             TeXIcon icon =
                     formula.createTeXIcon(
@@ -80,6 +84,16 @@ public class FormulaImageServiceImpl
 
             return archivo.getAbsolutePath();
         }catch (Exception ex) {
+            System.out.println("==================================");
+            System.out.println("ERROR EN FORMULA LATEX");
+            System.out.println("Fórmula:");
+            System.out.println(latex);
+            System.out.println("----------------------------------");
+            System.out.println("Mensaje:");
+            System.out.println(ex.getMessage());
+            System.out.println("----------------------------------");
+            ex.printStackTrace();
+            System.out.println("==================================");
             throw new RuntimeException(
                     ex
             );

@@ -185,6 +185,163 @@ public class PdfGeneratorServiceImpl
                 
                 }
         
+                .caratula{
+                
+                    height:267mm;
+                
+                    text-align:center;
+                
+                    display:flex;
+                
+                    flex-direction:column;
+                
+                    justify-content:space-between;
+                
+                    padding-top:10mm;
+                
+                    padding-bottom:10mm;
+                
+                }
+                
+                .universidad{
+                    margin-top:1mm;
+                    
+                    font-size:20px;
+                
+                    font-weight:bold;
+                
+                    letter-spacing:1px;
+                
+                }
+                
+                .titulo-examen{
+                    
+                    font-size:34px;
+                
+                    font-weight:bold;
+                
+                    margin-top:20mm;
+                
+                    margin-bottom:20px;
+                
+                    line-height:1.2;
+                
+                }
+                
+                .logo-contenedor{
+                
+                    margin-top:18mm;
+                
+                    margin-bottom:18mm;
+                
+                }
+                
+                .logo-universidad{
+                
+                    width:180px;
+                
+                }
+                
+                .modalidad{
+                
+                    font-size:26px;
+                
+                    font-weight:bold;
+                
+                    margin-top:18mm;
+                
+                }
+                
+                .modalidad-tipo{
+                
+                    font-size:26px;
+                
+                    font-weight:bold;
+                
+                    margin-top:10px;
+                    
+                    margin-bottom:20mm
+                
+                }
+                
+                .tema-contenedor{
+                
+                    display:flex;
+                
+                    justify-content:center;
+                
+                    align-items:center;
+                
+                    margin-top:40px;
+                
+                    margin-bottom:40px;
+                
+                }
+                
+                .tema-tabla{
+                    margin-top:25mm;
+                
+                    margin:auto;
+                
+                    border:none;
+                
+                    width:auto;
+                
+                }
+                
+                .tema-tabla td{
+                
+                    border:none;
+                
+                    vertical-align:middle;
+                
+                    padding:0 10px;
+                
+                }
+                
+                .tema-texto{
+                    width:140px;
+                    
+                    font-size:40px;
+                
+                    font-weight:bold;
+                
+                    margin-right:25px;
+                
+                }
+                
+                .tema-circulo{
+                
+                    width:95px;
+                
+                    height:95px;
+                
+                    border:3px solid black;
+                
+                    border-radius:50%;
+                
+                    font-size:56px;
+                
+                    font-weight:bold;
+                
+                    display:flex;
+                
+                    justify-content:center;
+                
+                    align-items:center;
+                
+                }
+                
+                .sunedu{
+                
+                    font-size:20px;
+                
+                    font-weight:bold;
+                
+                    margin-top:40mm;
+                
+                }
+        
         .contenedor{
         
             column-count:2;
@@ -266,9 +423,10 @@ public class PdfGeneratorServiceImpl
         
         <body>
         
-        <div class='contenedor'>
-        
         """);
+
+        html.append(construirCaratula(tema));
+        html.append("<div class='contenedor'>");
 
         List<TemaPregunta> preguntasTema = temaPreguntaRepository
                         .findByTemaIdOrderByOrdenPreguntaAsc(
@@ -484,6 +642,93 @@ public class PdfGeneratorServiceImpl
         );
 
         return resultado.toString();
+
+    }
+
+    private String construirCaratula(
+            TemaExamen tema
+    ) {
+
+        StringBuilder html = new StringBuilder();
+
+        html.append("""
+
+            <div class="caratula">
+    
+                <div class="universidad">
+                    UNIVERSIDAD NACIONAL "SAN LUIS GONZAGA"
+                </div>
+    
+                <div class="titulo-examen">
+        """);
+
+        html.append(
+                tema.getExamenGenerado().getNombre()
+                        .toUpperCase()
+        );
+
+        html.append("""
+                </div>
+    
+                <div class="logo-contenedor">
+    
+                    <img
+                        src="file:src/main/resources/static/img/logo-unica.png"
+                        class="logo-universidad"
+                    />
+    
+                </div>
+    
+                <div class="modalidad">
+    
+                    MODALIDAD
+    
+                </div>
+    
+                <div class="modalidad-tipo">
+    
+                    ORDINARIO
+    
+                </div>
+    
+                <table class="tema-tabla">
+                
+                    <tr>
+                    
+                            <td class="tema-texto">
+                                TEMA:
+                            </td>
+                        
+                        <td>
+                        
+                        <div class="tema-circulo">
+        """);
+
+        html.append(
+                tema.getCodigoTema()
+        );
+
+        html.append("""
+                        </div>
+                
+                    </td>
+                
+                </tr>
+                
+                </table>
+    
+                <div class="sunedu">
+    
+                    UNIVERSIDAD LICENCIADA POR SUNEDU
+    
+                </div>
+    
+            </div>
+    
+    
+        """);
+
+        return html.toString();
 
     }
 }
